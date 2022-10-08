@@ -25,7 +25,7 @@ export default function Home() {
           color="purple.800"
           fontFamily="Fredoka One"
           pt={5}>
-          encurtar.url
+          encurtar.tech
         </Text>
         <Text as="h2" textAlign="center">
           encurte seus links de forma rápida, simples e segura
