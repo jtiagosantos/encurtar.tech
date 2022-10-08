@@ -8,6 +8,8 @@ export const theme = extendTheme({
         maxW: '1920px',
         w: '100%',
         mx: 'auto',
+        px: '16px',
+        pb: '32px',
       },
     },
   },
