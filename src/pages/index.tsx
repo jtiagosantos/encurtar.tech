@@ -42,6 +42,11 @@ export default function Home() {
     setShortenedUrl(data || '');
   };
 
+  const handleShortenAnotherURL = () => {
+    setUrl('');
+    setShortenedUrl('');
+  };
+
   return (
     <>
       <Flex as="header" flexDir="column" align="center">
@@ -186,6 +191,7 @@ export default function Home() {
                 color="white"
                 _hover={{ opacity: 0.8 }}
                 flex={1}
+                onClick={handleShortenAnotherURL}
                 sx={{
                   '@media (max-width: 800px)': {
                     py: '16px',
