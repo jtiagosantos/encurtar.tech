@@ -1,4 +1,4 @@
-/* eslint-disable no-constant-condition */
+import { useState } from 'react';
 import {
   Flex,
   Box,
@@ -15,7 +15,33 @@ import {
   LinkIcon,
 } from '@chakra-ui/icons';
 
+//services
+import { shortenerURLService } from '@/services';
+
 export default function Home() {
+  const [url, setUrl] = useState('');
+  const [shortenedUrl, setShortenedUrl] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleShortenURL = async () => {
+    if (!url) {
+      return setError('Informe uma URL');
+    }
+
+    setLoading(true);
+
+    const { data, error } = await shortenerURLService({ url });
+
+    if (error) {
+      setLoading(false);
+      return setError(error);
+    }
+
+    setLoading(false);
+    setShortenedUrl(data || '');
+  };
+
   return (
     <>
       <Flex as="header" flexDir="column" align="center">
@@ -33,45 +59,76 @@ export default function Home() {
       </Flex>
 
       <Box as="main" mt="84px" maxW="900px" mx="auto">
-        {true ? (
-          <Flex
-            as="section"
-            w="100%"
-            align="flex-end"
-            sx={{
-              '@media (max-width: 600px)': {
-                flexDir: 'column',
-                align: 'center',
-              },
-            }}>
-            <FormControl>
-              <FormLabel fontSize="1.3rem">URL para encurtar</FormLabel>
-              <Input
-                type="text"
-                placeholder="https://..."
-                size="lg"
-                focusBorderColor="purple.800"
-              />
-            </FormControl>
-            <Button
-              w="200px"
-              leftIcon={<AttachmentIcon />}
-              size="lg"
-              ml="16px"
-              px="64px"
-              bg="purple.700"
-              color="white"
-              _hover={{ opacity: 0.8 }}
+        {!shortenedUrl ? (
+          <>
+            <Flex
+              as="section"
+              w="100%"
+              align="flex-end"
               sx={{
                 '@media (max-width: 600px)': {
-                  w: '100%',
-                  ml: 0,
-                  mt: '16px',
+                  flexDir: 'column',
+                  align: 'center',
                 },
               }}>
-              ENCURTAR URL
-            </Button>
-          </Flex>
+              <FormControl isInvalid={!!error}>
+                <FormLabel fontSize="1.3rem">URL para encurtar</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="https://..."
+                  size="lg"
+                  focusBorderColor="purple.800"
+                  value={url}
+                  onChange={({ target }) => setUrl(target.value)}
+                />
+              </FormControl>
+              <Text
+                w="100%"
+                fontSize="0.9rem"
+                color="red.500"
+                mt="5px"
+                sx={{
+                  '@media (max-width: 600px)': {
+                    display: 'block',
+                  },
+                  '@media (min-width: 601px)': {
+                    display: 'none',
+                  },
+                }}>
+                {error}
+              </Text>
+              <Button
+                w="200px"
+                leftIcon={!loading ? <AttachmentIcon /> : undefined}
+                size="lg"
+                ml="16px"
+                px="64px"
+                bg="purple.700"
+                color="white"
+                _hover={{ opacity: 0.8 }}
+                sx={{
+                  '@media (max-width: 600px)': {
+                    w: '100%',
+                    ml: 0,
+                    mt: '16px',
+                  },
+                }}
+                onClick={handleShortenURL}>
+                {loading ? 'ENCURTANDO...' : 'ENCURTAR URL'}
+              </Button>
+            </Flex>
+            <Text
+              fontSize="0.9rem"
+              color="red.500"
+              mt="5px"
+              sx={{
+                '@media (max-width: 600px)': {
+                  display: 'none',
+                },
+              }}>
+              {error}
+            </Text>
+          </>
         ) : (
           <Box as="section" w="100%">
             <Text
@@ -83,7 +140,7 @@ export default function Home() {
               borderRadius="6px"
               color="gray.600"
               py={3}>
-              l1nq.com/GB3X2
+              {shortenedUrl}
             </Text>
             <Flex
               w="100%"
