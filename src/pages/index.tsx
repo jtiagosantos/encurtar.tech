@@ -1,4 +1,5 @@
-/* eslint-disable no-constant-condition */
+import { GetServerSideProps } from 'next';
+import { useState } from 'react';
 import {
   Flex,
   Box,
@@ -7,6 +8,7 @@ import {
   FormLabel,
   Input,
   Button,
+  useToast,
 } from '@chakra-ui/react';
 import {
   AttachmentIcon,
@@ -15,7 +17,74 @@ import {
   LinkIcon,
 } from '@chakra-ui/icons';
 
-export default function Home() {
+//libs
+import { redis } from '@/libs';
+
+//services
+import { shortenerURLService, getShortenedURLCountService } from '@/services';
+
+//hooks
+import { useWebShare } from '@/hooks';
+
+//constants
+import { REDIS_KEYS } from '@/constants';
+
+type HomeProps = {
+  access_count: number;
+  shortened_url_count: number;
+};
+
+export default function Home({ access_count, shortened_url_count }: HomeProps) {
+  const toast = useToast();
+  const { share } = useWebShare();
+  const [url, setUrl] = useState('');
+  const [shortenedUrl, setShortenedUrl] = useState('');
+  const [shortenedUrlCount, setShortenedUrlCount] =
+    useState(shortened_url_count);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleShortenURL = async () => {
+    if (!url) {
+      return setError('Informe uma URL');
+    }
+
+    setLoading(true);
+
+    const { data, error } = await shortenerURLService({ url });
+
+    if (error) {
+      setLoading(false);
+      return setError(error);
+    }
+    setLoading(false);
+    setShortenedUrl(data || '');
+
+    const shortenedUrlCount = await getShortenedURLCountService();
+    setShortenedUrlCount(shortenedUrlCount);
+  };
+
+  const handleShortenAnotherURL = () => {
+    setUrl('');
+    setShortenedUrl('');
+  };
+
+  const handleCopyShortenedURLToClipboard = () => {
+    navigator.clipboard.writeText(shortenedUrl);
+    toast({
+      description: 'Link copiado para a área de transferência',
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  const handleShareShortenedURL = async () => {
+    await share({
+      title: 'URL encurtada',
+      text: shortenedUrl,
+    });
+  };
+
   return (
     <>
       <Flex as="header" flexDir="column" align="center">
@@ -25,7 +94,7 @@ export default function Home() {
           color="purple.800"
           fontFamily="Fredoka One"
           pt={5}>
-          encurtar.url
+          encurtar.tech
         </Text>
         <Text as="h2" textAlign="center">
           encurte seus links de forma rápida, simples e segura
@@ -33,45 +102,79 @@ export default function Home() {
       </Flex>
 
       <Box as="main" mt="84px" maxW="900px" mx="auto">
-        {true ? (
-          <Flex
-            as="section"
-            w="100%"
-            align="flex-end"
-            sx={{
-              '@media (max-width: 600px)': {
-                flexDir: 'column',
-                align: 'center',
-              },
-            }}>
-            <FormControl>
-              <FormLabel fontSize="1.3rem">URL para encurtar</FormLabel>
-              <Input
-                type="text"
-                placeholder="https://..."
-                size="lg"
-                focusBorderColor="purple.800"
-              />
-            </FormControl>
-            <Button
-              w="200px"
-              leftIcon={<AttachmentIcon />}
-              size="lg"
-              ml="16px"
-              px="64px"
-              bg="purple.700"
-              color="white"
-              _hover={{ opacity: 0.8 }}
+        {!shortenedUrl ? (
+          <>
+            <Flex
+              as="section"
+              w="100%"
+              align="flex-end"
               sx={{
                 '@media (max-width: 600px)': {
-                  w: '100%',
-                  ml: 0,
-                  mt: '16px',
+                  flexDir: 'column',
+                  align: 'center',
                 },
               }}>
-              ENCURTAR URL
-            </Button>
-          </Flex>
+              <FormControl isInvalid={!!error}>
+                <FormLabel fontSize="1.3rem">URL para encurtar</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="https://..."
+                  size="lg"
+                  focusBorderColor="purple.800"
+                  value={url}
+                  onChange={({ target }) => setUrl(target.value)}
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  autoCorrect="none"
+                />
+              </FormControl>
+              <Text
+                w="100%"
+                fontSize="0.9rem"
+                color="red.500"
+                mt="5px"
+                sx={{
+                  '@media (max-width: 600px)': {
+                    display: 'block',
+                  },
+                  '@media (min-width: 601px)': {
+                    display: 'none',
+                  },
+                }}>
+                {error}
+              </Text>
+              <Button
+                w="200px"
+                leftIcon={!loading ? <AttachmentIcon /> : undefined}
+                size="lg"
+                ml="16px"
+                px="64px"
+                bg="purple.700"
+                color="white"
+                _hover={{ opacity: 0.8 }}
+                sx={{
+                  '@media (max-width: 600px)': {
+                    w: '100%',
+                    ml: 0,
+                    mt: '16px',
+                  },
+                }}
+                onClick={handleShortenURL}>
+                {loading ? 'ENCURTANDO...' : 'ENCURTAR URL'}
+              </Button>
+            </Flex>
+            <Text
+              fontSize="0.9rem"
+              color="red.500"
+              mt="5px"
+              sx={{
+                '@media (max-width: 600px)': {
+                  display: 'none',
+                },
+              }}>
+              {error}
+            </Text>
+          </>
         ) : (
           <Box as="section" w="100%">
             <Text
@@ -83,7 +186,7 @@ export default function Home() {
               borderRadius="6px"
               color="gray.600"
               py={3}>
-              l1nq.com/GB3X2
+              {shortenedUrl}
             </Text>
             <Flex
               w="100%"
@@ -101,6 +204,7 @@ export default function Home() {
                 color="white"
                 _hover={{ opacity: 0.8 }}
                 flex={1}
+                onClick={handleCopyShortenedURLToClipboard}
                 sx={{
                   '@media (max-width: 800px)': {
                     py: '16px',
@@ -115,6 +219,7 @@ export default function Home() {
                 color="white"
                 _hover={{ opacity: 0.8 }}
                 flex={1}
+                onClick={handleShareShortenedURL}
                 sx={{
                   '@media (max-width: 800px)': {
                     py: '16px',
@@ -129,6 +234,7 @@ export default function Home() {
                 color="white"
                 _hover={{ opacity: 0.8 }}
                 flex={1}
+                onClick={handleShortenAnotherURL}
                 sx={{
                   '@media (max-width: 800px)': {
                     py: '16px',
@@ -160,7 +266,7 @@ export default function Home() {
             borderLeftColor="purple.800"
             borderLeftWidth="8px">
             <Text fontSize="0.9rem">Acessos</Text>
-            <Text fontSize="1.2rem">999.999</Text>
+            <Text fontSize="1.2rem">{access_count}</Text>
           </Flex>
           <Flex
             boxShadow="1px 1px 8px -4px gray"
@@ -172,10 +278,22 @@ export default function Home() {
             borderLeftColor="purple.800"
             borderLeftWidth="8px">
             <Text fontSize="0.9rem">URLs encurtadas</Text>
-            <Text fontSize="1.2rem">999</Text>
+            <Text fontSize="1.2rem">{shortenedUrlCount || 0}</Text>
           </Flex>
         </Flex>
       </Box>
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const access_count = await redis.incr(REDIS_KEYS.ACCESS_COUNT);
+  const shortened_url_count = await redis.get(REDIS_KEYS.SHORTENED_URL_COUNT);
+
+  return {
+    props: {
+      access_count,
+      shortened_url_count,
+    },
+  };
+};
