@@ -85,6 +85,9 @@ export default function Home() {
                   focusBorderColor="purple.800"
                   value={url}
                   onChange={({ target }) => setUrl(target.value)}
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  autoCorrect="none"
                 />
               </FormControl>
               <Text
