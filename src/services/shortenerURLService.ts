@@ -1,4 +1,5 @@
-import axios from 'axios';
+//api
+import { api } from '@/configs';
 
 //constants
 import { SHORTENER_API_URL } from '@/constants';
@@ -13,7 +14,7 @@ interface ShortenerURLServiceRequest {
 export const shortenerURLService = async ({
   url,
 }: ShortenerURLServiceRequest): Promise<ServiceResponse<string>> => {
-  const response = await axios.get<{ shorturl?: string }>(
+  const response = await api.get<{ shorturl?: string }>(
     `${SHORTENER_API_URL}=${url}`,
   );
 
