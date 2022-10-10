@@ -19,8 +19,12 @@ import {
 //services
 import { shortenerURLService } from '@/services';
 
+//hooks
+import { useWebShare } from '@/hooks';
+
 export default function Home() {
   const toast = useToast();
+  const { share } = useWebShare();
   const [url, setUrl] = useState('');
   const [shortenedUrl, setShortenedUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -55,6 +59,13 @@ export default function Home() {
       description: 'Link copiado para a área de transferência',
       duration: 3000,
       isClosable: true,
+    });
+  };
+
+  const handleShareShortenedURL = async () => {
+    await share({
+      title: 'URL encurtada',
+      text: shortenedUrl,
     });
   };
 
@@ -192,6 +203,7 @@ export default function Home() {
                 color="white"
                 _hover={{ opacity: 0.8 }}
                 flex={1}
+                onClick={handleShareShortenedURL}
                 sx={{
                   '@media (max-width: 800px)': {
                     py: '16px',
