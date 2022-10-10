@@ -1,4 +1,4 @@
-//api
+//configs
 import { api } from '@/configs';
 
 //constants
