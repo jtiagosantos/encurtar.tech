@@ -1,3 +1,4 @@
+import { GetServerSideProps } from 'next';
 import { useState } from 'react';
 import {
   Flex,
@@ -16,17 +17,30 @@ import {
   LinkIcon,
 } from '@chakra-ui/icons';
 
+//libs
+import { redis } from '@/libs';
+
 //services
-import { shortenerURLService } from '@/services';
+import { shortenerURLService, getShortenedURLCountService } from '@/services';
 
 //hooks
 import { useWebShare } from '@/hooks';
 
-export default function Home() {
+//constants
+import { REDIS_KEYS } from '@/constants';
+
+type HomeProps = {
+  access_count: number;
+  shortened_url_count: number;
+};
+
+export default function Home({ access_count, shortened_url_count }: HomeProps) {
   const toast = useToast();
   const { share } = useWebShare();
   const [url, setUrl] = useState('');
   const [shortenedUrl, setShortenedUrl] = useState('');
+  const [shortenedUrlCount, setShortenedUrlCount] =
+    useState(shortened_url_count);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -43,9 +57,11 @@ export default function Home() {
       setLoading(false);
       return setError(error);
     }
-
     setLoading(false);
     setShortenedUrl(data || '');
+
+    const shortenedUrlCount = await getShortenedURLCountService();
+    setShortenedUrlCount(shortenedUrlCount);
   };
 
   const handleShortenAnotherURL = () => {
@@ -250,7 +266,7 @@ export default function Home() {
             borderLeftColor="purple.800"
             borderLeftWidth="8px">
             <Text fontSize="0.9rem">Acessos</Text>
-            <Text fontSize="1.2rem">999.999</Text>
+            <Text fontSize="1.2rem">{access_count}</Text>
           </Flex>
           <Flex
             boxShadow="1px 1px 8px -4px gray"
@@ -262,10 +278,22 @@ export default function Home() {
             borderLeftColor="purple.800"
             borderLeftWidth="8px">
             <Text fontSize="0.9rem">URLs encurtadas</Text>
-            <Text fontSize="1.2rem">999</Text>
+            <Text fontSize="1.2rem">{shortenedUrlCount || 0}</Text>
           </Flex>
         </Flex>
       </Box>
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const access_count = await redis.incr(REDIS_KEYS.ACCESS_COUNT);
+  const shortened_url_count = await redis.get(REDIS_KEYS.SHORTENED_URL_COUNT);
+
+  return {
+    props: {
+      access_count,
+      shortened_url_count,
+    },
+  };
+};
