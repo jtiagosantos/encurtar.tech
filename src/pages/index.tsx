@@ -7,6 +7,7 @@ import {
   FormLabel,
   Input,
   Button,
+  useToast,
 } from '@chakra-ui/react';
 import {
   AttachmentIcon,
@@ -19,6 +20,7 @@ import {
 import { shortenerURLService } from '@/services';
 
 export default function Home() {
+  const toast = useToast();
   const [url, setUrl] = useState('');
   const [shortenedUrl, setShortenedUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -45,6 +47,15 @@ export default function Home() {
   const handleShortenAnotherURL = () => {
     setUrl('');
     setShortenedUrl('');
+  };
+
+  const handleCopyShortenedURLToClipboard = () => {
+    navigator.clipboard.writeText(shortenedUrl);
+    toast({
+      description: 'Link copiado para a área de transferência',
+      duration: 3000,
+      isClosable: true,
+    });
   };
 
   return (
@@ -166,6 +177,7 @@ export default function Home() {
                 color="white"
                 _hover={{ opacity: 0.8 }}
                 flex={1}
+                onClick={handleCopyShortenedURLToClipboard}
                 sx={{
                   '@media (max-width: 800px)': {
                     py: '16px',
