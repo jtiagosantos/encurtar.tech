@@ -11,6 +11,19 @@ export default class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;500;600;700&display=swap"
             rel="stylesheet"
           />
+          <link rel="icon" href="/favicon/favicon.ico" />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon/favicon-16x16.png"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon/favicon-32x32.png"
+          />
         </Head>
         <body>
           <Main />
