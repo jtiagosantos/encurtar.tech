@@ -26,12 +26,15 @@ import { shortenerURLService, getShortenedURLCountService } from '@/services';
 //hooks
 import { useWebShare } from '@/hooks';
 
+//utils
+import { formatNumber } from '@/utils';
+
 //constants
 import { REDIS_KEYS } from '@/constants';
 
 type HomeProps = {
-  access_count: number;
-  shortened_url_count: number;
+  access_count: string;
+  shortened_url_count: string;
 };
 
 export default function Home({ access_count, shortened_url_count }: HomeProps) {
@@ -61,7 +64,7 @@ export default function Home({ access_count, shortened_url_count }: HomeProps) {
     setShortenedUrl(data || '');
 
     const shortenedUrlCount = await getShortenedURLCountService();
-    setShortenedUrlCount(shortenedUrlCount);
+    setShortenedUrlCount(formatNumber(shortenedUrlCount));
   };
 
   const handleShortenAnotherURL = () => {
@@ -292,8 +295,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   return {
     props: {
-      access_count,
-      shortened_url_count,
+      access_count: formatNumber(access_count),
+      shortened_url_count: formatNumber(Number(shortened_url_count)),
     },
   };
 };
