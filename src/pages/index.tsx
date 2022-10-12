@@ -70,6 +70,7 @@ export default function Home({ access_count, shortened_url_count }: HomeProps) {
   const handleShortenAnotherURL = () => {
     setUrl('');
     setShortenedUrl('');
+    setError('');
   };
 
   const handleCopyShortenedURLToClipboard = () => {
