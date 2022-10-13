@@ -70,6 +70,7 @@ export default function Home({ access_count, shortened_url_count }: HomeProps) {
   const handleShortenAnotherURL = () => {
     setUrl('');
     setShortenedUrl('');
+    setError('');
   };
 
   const handleCopyShortenedURLToClipboard = () => {
@@ -155,6 +156,9 @@ export default function Home({ access_count, shortened_url_count }: HomeProps) {
                 bg="purple.700"
                 color="white"
                 _hover={{ opacity: 0.8 }}
+                _active={{
+                  bg: 'purple.700',
+                }}
                 sx={{
                   '@media (max-width: 600px)': {
                     w: '100%',
@@ -206,6 +210,9 @@ export default function Home({ access_count, shortened_url_count }: HomeProps) {
                 bg="purple.700"
                 color="white"
                 _hover={{ opacity: 0.8 }}
+                _active={{
+                  bg: 'purple.700',
+                }}
                 flex={1}
                 onClick={handleCopyShortenedURLToClipboard}
                 sx={{
@@ -221,6 +228,9 @@ export default function Home({ access_count, shortened_url_count }: HomeProps) {
                 bg="purple.700"
                 color="white"
                 _hover={{ opacity: 0.8 }}
+                _active={{
+                  bg: 'purple.700',
+                }}
                 flex={1}
                 onClick={handleShareShortenedURL}
                 sx={{
@@ -236,6 +246,9 @@ export default function Home({ access_count, shortened_url_count }: HomeProps) {
                 bg="purple.700"
                 color="white"
                 _hover={{ opacity: 0.8 }}
+                _active={{
+                  bg: 'purple.700',
+                }}
                 flex={1}
                 onClick={handleShortenAnotherURL}
                 sx={{
