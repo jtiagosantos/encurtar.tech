@@ -1,9 +1,10 @@
+import { FC } from 'react';
 import * as ChakraUI from '@chakra-ui/react';
 
 //types
 import type { TextProps } from './types';
 
-export const Text: TextProps = ({ size = 'sm', children, ...props }) => {
+export const Text: FC<TextProps> = ({ size = 'sm', children, ...props }) => {
   const dynamicSize = {
     sm: '16px',
     md: '19.2px',
