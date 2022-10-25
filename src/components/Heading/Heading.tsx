@@ -1,9 +1,14 @@
+import { FC } from 'react';
 import * as ChakraUI from '@chakra-ui/react';
 
 //types
 import type { HeadingProps } from './types';
 
-export const Heading: HeadingProps = ({ size = 'xl', children, ...props }) => {
+export const Heading: FC<HeadingProps> = ({
+  size = 'xl',
+  children,
+  ...props
+}) => {
   const dynamicSize = {
     xl: '30px',
     '1xl': '36px',
