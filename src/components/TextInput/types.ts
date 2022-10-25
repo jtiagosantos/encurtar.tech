@@ -1,18 +1,14 @@
 import { FormLabelProps, InputProps, TextProps } from '@chakra-ui/react';
-import { FC, PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 
-export type TextInputRootProps = FC<PropsWithChildren<unknown>>;
+export type TextInputRootProps = PropsWithChildren<unknown>;
 
-export type TextInputLabelProps = FC<
-  FormLabelProps & {
-    text: string;
-  }
->;
+export type TextInputLabelProps = FormLabelProps & {
+  text: string;
+};
 
-export type TextInputFieldProps = FC<InputProps>;
+export type TextInputFieldProps = InputProps;
 
-export type TextInputErrorProps = FC<
-  TextProps & {
-    error: string;
-  }
->;
+export type TextInputErrorProps = TextProps & {
+  error: string;
+};
