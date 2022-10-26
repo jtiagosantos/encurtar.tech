@@ -1,7 +1,5 @@
 import { themes } from '@storybook/theming';
-import { ChakraProvider } from '@chakra-ui/react';
-
-import { theme } from '../src/styles/theme';
+import { ChakraProvider, theme } from '@chakra-ui/react';
 
 export const decorators = [
   (Story) => (
@@ -21,5 +19,8 @@ export const parameters = {
   },
   docs: {
     theme: themes.dark,
+  },
+  chakra: {
+    theme,
   },
 };
