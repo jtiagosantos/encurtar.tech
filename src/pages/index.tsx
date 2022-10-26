@@ -1,15 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { useState } from 'react';
-import {
-  Flex,
-  Box,
-  Text,
-  FormControl,
-  FormLabel,
-  Input,
-  Button,
-  useToast,
-} from '@chakra-ui/react';
+import { Flex, Box, FormControl, useToast } from '@chakra-ui/react';
 import {
   AttachmentIcon,
   CopyIcon,
@@ -28,6 +19,9 @@ import { useWebShare } from '@/hooks';
 
 //utils
 import { formatNumber } from '@/utils';
+
+//components
+import { StatCard, Button, TextInput, Text, Heading } from '@/components';
 
 //constants
 import { REDIS_KEYS } from '@/constants';
@@ -92,15 +86,16 @@ export default function Home({ access_count, shortened_url_count }: HomeProps) {
   return (
     <>
       <Flex as="header" flexDir="column" align="center">
-        <Text
+        <Heading
           as="h1"
-          fontSize="3rem"
-          color="purple.800"
+          size="3xl"
           fontFamily="Fredoka One"
-          pt={5}>
+          color="purple.800"
+          pt="32px"
+          fontWeight="400">
           encurtar.tech
-        </Text>
-        <Text as="h2" textAlign="center">
+        </Heading>
+        <Text as="h2" size="sm" textAlign="center" mt={1}>
           encurte seus links de forma rápida, simples e segura
         </Text>
       </Flex>
@@ -118,69 +113,34 @@ export default function Home({ access_count, shortened_url_count }: HomeProps) {
                   align: 'center',
                 },
               }}>
-              <FormControl isInvalid={!!error}>
-                <FormLabel fontSize="1.3rem">URL para encurtar</FormLabel>
-                <Input
-                  type="text"
-                  placeholder="https://..."
-                  size="lg"
-                  focusBorderColor="purple.800"
-                  value={url}
-                  onChange={({ target }) => setUrl(target.value)}
-                  autoComplete="off"
-                  autoCapitalize="none"
-                  autoCorrect="none"
-                />
+              <FormControl as="form" isInvalid={!!error}>
+                <TextInput.Root>
+                  <TextInput.Label text="URL para encurtar" />
+                  <TextInput.Field
+                    type="text"
+                    placeholder="https://..."
+                    value={url}
+                    onChange={({ target }) => setUrl(target.value)}
+                  />
+                  <TextInput.Error error={error} />
+                </TextInput.Root>
               </FormControl>
-              <Text
-                w="100%"
-                fontSize="0.9rem"
-                color="red.500"
-                mt="5px"
-                sx={{
-                  '@media (max-width: 600px)': {
-                    display: 'block',
-                  },
-                  '@media (min-width: 601px)': {
-                    display: 'none',
-                  },
-                }}>
-                {error}
-              </Text>
               <Button
+                text={loading ? 'ENCURTANDO...' : 'ENCURTAR URL'}
                 w="200px"
                 leftIcon={!loading ? <AttachmentIcon /> : undefined}
-                size="lg"
                 ml="16px"
                 px="64px"
-                bg="purple.700"
-                color="white"
-                _hover={{ opacity: 0.8 }}
-                _active={{
-                  bg: 'purple.700',
-                }}
                 sx={{
                   '@media (max-width: 600px)': {
                     w: '100%',
                     ml: 0,
-                    mt: '16px',
+                    mt: error ? '32px' : '16px',
                   },
                 }}
-                onClick={handleShortenURL}>
-                {loading ? 'ENCURTANDO...' : 'ENCURTAR URL'}
-              </Button>
+                onClick={handleShortenURL}
+              />
             </Flex>
-            <Text
-              fontSize="0.9rem"
-              color="red.500"
-              mt="5px"
-              sx={{
-                '@media (max-width: 600px)': {
-                  display: 'none',
-                },
-              }}>
-              {error}
-            </Text>
           </>
         ) : (
           <Box as="section" w="100%">
@@ -205,59 +165,38 @@ export default function Home({ access_count, shortened_url_count }: HomeProps) {
                 },
               }}>
               <Button
+                text="COPIAR LINK"
                 leftIcon={<CopyIcon />}
-                size="lg"
-                bg="purple.700"
-                color="white"
-                _hover={{ opacity: 0.8 }}
-                _active={{
-                  bg: 'purple.700',
-                }}
                 flex={1}
                 onClick={handleCopyShortenedURLToClipboard}
                 sx={{
                   '@media (max-width: 800px)': {
                     py: '16px',
                   },
-                }}>
-                COPIAR LINK
-              </Button>
-              <Button
-                leftIcon={<ExternalLinkIcon />}
-                size="lg"
-                bg="purple.700"
-                color="white"
-                _hover={{ opacity: 0.8 }}
-                _active={{
-                  bg: 'purple.700',
                 }}
+              />
+              <Button
+                text="COMPARTILHAR LINK"
+                leftIcon={<ExternalLinkIcon />}
                 flex={1}
                 onClick={handleShareShortenedURL}
                 sx={{
                   '@media (max-width: 800px)': {
                     py: '16px',
                   },
-                }}>
-                COMPARTILHAR LINK
-              </Button>
-              <Button
-                leftIcon={<LinkIcon />}
-                size="lg"
-                bg="purple.700"
-                color="white"
-                _hover={{ opacity: 0.8 }}
-                _active={{
-                  bg: 'purple.700',
                 }}
+              />
+              <Button
+                text="ENCURTAR OUTRA URL"
+                leftIcon={<LinkIcon />}
                 flex={1}
                 onClick={handleShortenAnotherURL}
                 sx={{
                   '@media (max-width: 800px)': {
                     py: '16px',
                   },
-                }}>
-                ENCURTAR OUTRA URL
-              </Button>
+                }}
+              />
             </Flex>
           </Box>
         )}
@@ -272,30 +211,14 @@ export default function Home({ access_count, shortened_url_count }: HomeProps) {
               flexDir: 'column',
             },
           }}>
-          <Flex
-            boxShadow="1px 1px 8px -4px gray"
-            p="28px"
-            borderRadius="6px"
-            flex={1}
-            align="center"
-            justify="space-between"
-            borderLeftColor="purple.800"
-            borderLeftWidth="8px">
-            <Text fontSize="0.9rem">Acessos</Text>
-            <Text fontSize="1.2rem">{access_count}</Text>
-          </Flex>
-          <Flex
-            boxShadow="1px 1px 8px -4px gray"
-            p="28px"
-            borderRadius="6px"
-            flex={1}
-            align="center"
-            justify="space-between"
-            borderLeftColor="purple.800"
-            borderLeftWidth="8px">
-            <Text fontSize="0.9rem">URLs encurtadas</Text>
-            <Text fontSize="1.2rem">{shortenedUrlCount || 0}</Text>
-          </Flex>
+          <StatCard.Root>
+            <StatCard.Label value="Acessos" />
+            <StatCard.Value value={access_count} />
+          </StatCard.Root>
+          <StatCard.Root>
+            <StatCard.Label value="URLs encurtadas" />
+            <StatCard.Value value={shortenedUrlCount || '0'} />
+          </StatCard.Root>
         </Flex>
       </Box>
     </>
