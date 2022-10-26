@@ -16,5 +16,15 @@ module.exports = {
   "features": {
     "storyStoreV7": true,
     "emotionAlias": false,
+  },
+  "staticDirs": [
+    "../public"
+  ],
+  viteFinal: (config, { configType }) => {
+    if (configType === 'PRODUCTION') {
+      config.base = '/encurtar.tech/'
+    }
+
+    return config
   }
 }
