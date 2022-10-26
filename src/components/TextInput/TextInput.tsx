@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import { FormLabel, Input, Text } from '@chakra-ui/react';
 
 //types
@@ -8,9 +9,9 @@ import type {
   TextInputErrorProps,
 } from './types';
 
-const TextInputRoot: TextInputRootProps = ({ children }) => <>{children}</>;
+const TextInputRoot: FC<TextInputRootProps> = ({ children }) => <>{children}</>;
 
-const TextInputLabel: TextInputLabelProps = ({ text, ...props }) => {
+const TextInputLabel: FC<TextInputLabelProps> = ({ text, ...props }) => {
   return (
     <FormLabel fontSize="1.3rem" {...props}>
       {text}
@@ -18,7 +19,7 @@ const TextInputLabel: TextInputLabelProps = ({ text, ...props }) => {
   );
 };
 
-const TextInputField: TextInputFieldProps = ({ ...props }) => {
+const TextInputField: FC<TextInputFieldProps> = ({ ...props }) => {
   return (
     <Input
       size="lg"
@@ -31,13 +32,18 @@ const TextInputField: TextInputFieldProps = ({ ...props }) => {
   );
 };
 
-const TextInputError: TextInputErrorProps = ({ error, ...props }) => {
+const TextInputError: FC<TextInputErrorProps> = ({ error, ...props }) => {
   return (
     <Text fontSize="0.9rem" color="red.500" mt="5px" pos="absolute" {...props}>
       {error}
     </Text>
   );
 };
+
+TextInputRoot.displayName = 'TextInput.Root';
+TextInputLabel.displayName = 'TextInput.Label';
+TextInputField.displayName = 'TextInput.Field';
+TextInputError.displayName = 'TextInput.Error';
 
 export const TextInput = {
   Root: TextInputRoot,

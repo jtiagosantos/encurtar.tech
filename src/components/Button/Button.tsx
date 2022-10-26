@@ -1,9 +1,10 @@
+import { FC } from 'react';
 import * as ChakraUI from '@chakra-ui/react';
 
 //types
 import type { ButtonProps } from './types';
 
-export const Button: ButtonProps = ({ text, ...props }) => {
+export const Button: FC<ButtonProps> = ({ text, ...props }) => {
   return (
     <ChakraUI.Button
       size="lg"
