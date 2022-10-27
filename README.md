@@ -14,7 +14,7 @@
 </p>
 
 <h4 align="center"> 
-	🚧 encurtar.tech 🔗 Completed 🚀 🚧
+  🚧 encurtar.tech 🔗 Completed 🚀 🚧
 </h4>
 
 <p align="center">
