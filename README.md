@@ -1,5 +1,5 @@
 
-<h1 align="center">Encurtar.tech</h1>
+<h1 align="center">encurtar.tech</h1>
 
 <p align="center">
   <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/jtiagosantos/encurtar.tech?color=%green">
@@ -14,7 +14,7 @@
 </p>
 
 <h4 align="center"> 
-	🚧 Encurtar.tech 🔗 Completed 🚀 🚧
+  🚧 encurtar.tech 🔗 Completed 🚀 🚧
 </h4>
 
 <p align="center">
