@@ -9,7 +9,7 @@
   </a>
   <img alt="License" src="https://img.shields.io/badge/license-MIT-brightgreen?color=orange">
    <a href="https://github.com/jtiagosantos/encurtar.tech/stargazers">
-    <img alt="Stargazers" src="https://img.shields.io/github/stars/jtiagosantos/my-skills-app?style=social">
+    <img alt="Stargazers" src="https://img.shields.io/github/stars/jtiagosantos/encurtar.tech?style=social">
   </a>
 </p>
 
